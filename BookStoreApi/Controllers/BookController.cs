@@ -1,4 +1,5 @@
-﻿using BookStoreApi.Interfaces;
+﻿using BookStoreApi.DTOs;
+using BookStoreApi.Interfaces;
 using BookStoreApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,12 +33,10 @@ namespace BookStoreApi.Controllers
                 return Ok(book);
         }
 
-
-
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm][Bind("Title")] Book book)
+        public async Task<IActionResult> Post([FromForm] BookDto book)
         {
-            var bookResult = await _bookRepository.Add(book);
+            var bookResult = await _bookRepository.Add(new Book { Title = book.Title });
             return Ok(bookResult);
         }
 
