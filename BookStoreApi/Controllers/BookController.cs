@@ -1,6 +1,7 @@
 ﻿using BookStoreApi.DTOs;
 using BookStoreApi.Interfaces;
 using BookStoreApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,7 @@ namespace BookStoreApi.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Get()
         {
             return Ok(await _bookRepository.GetAllBooks());

@@ -1,6 +1,9 @@
 using BookStoreApi.Data;
 using BookStoreApi.Interfaces;
 using BookStoreApi.Repositories;
+using BookStoreApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,17 @@ builder.Services.AddDbContext<BooksDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddIdentityCore<IdentityUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<BooksDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services
+    .AddAuthentication(defaultScheme:
+    JwtBearerDefaults.AuthenticationScheme);
+
+
 //builder.Services.AddSingleton<IBookRepository, MockBookRepository>();
 //builder.Services.AddScoped<>
 //builder.Services.AddTransient<>;
