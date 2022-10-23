@@ -18,7 +18,7 @@ namespace BookStoreApi.Controllers
 
         [HttpGet]
         [Route("login")]
-        public string Login()
+        public IActionResult Login()
         {
             var user = new IdentityUser
             {
@@ -28,7 +28,7 @@ namespace BookStoreApi.Controllers
 
             string token = _jwtToken.Generate(user);
 
-            return token;
+            return Ok(new { token = token });
 
         }
     }

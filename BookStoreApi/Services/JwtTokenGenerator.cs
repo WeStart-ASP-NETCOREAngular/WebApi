@@ -35,7 +35,7 @@ namespace BookStoreApi.Services
                issuer: _configuration["JWT:ValidIssuer"],
                audience: _configuration["JWT:ValidAudience"],
                claims: claims,
-               expires: DateTime.Now.AddMinutes(2),
+               expires: DateTime.Now.AddMinutes(10),
                signingCredentials: cred);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
