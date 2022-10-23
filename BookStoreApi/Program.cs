@@ -19,7 +19,16 @@ builder.Services.AddDbContext<BooksDbContext>(options =>
 });
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddIdentityCore<IdentityUser>()
+builder.Services.AddIdentityCore<IdentityUser>(options =>
+{
+    options.Password.RequiredUniqueChars = 1;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 1;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireLowercase = false;
+
+})
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BooksDbContext>()
     .AddDefaultTokenProviders();
