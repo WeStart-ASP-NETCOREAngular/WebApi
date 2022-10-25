@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BookStoreApi.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace BookStoreApi.Interfaces
 {
     public interface IJwtTokenGenerator
     {
-        string Generate(IdentityUser user);
+        string Generate(ApplicationUser user);
     }
 }

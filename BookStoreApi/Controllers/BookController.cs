@@ -10,6 +10,9 @@ namespace BookStoreApi.Controllers
 {
     [Route("api/books")]
     [ApiController]
+    // Specific Type
+    // IActionResult
+    // ActionResult
     public class BookController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
@@ -26,18 +29,47 @@ namespace BookStoreApi.Controllers
             return Ok(await _bookRepository.GetAllBooks());
         }
 
+        /// <summary>
+        /// Get a book with auther details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <response code="200">Returns a book</response>
+        /// <response code="404">Book not found in our database</response>
         [HttpGet("{id:int}")]
+        [Produces("application/json")]
         public async Task<ActionResult<Book>> Get(int id)
         {
             var book = await _bookRepository.GetById(id);
+            //return book;
             if (book == null)
                 return NotFound();
             else
                 return Ok(book);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post([FromForm] BookDto book)
+        /// <summary>
+        /// Adds New Book 
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Todo
+        ///     {
+        ///        "id": 1,
+        ///        "name": "Item #1",
+        ///        "isComplete": true
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="book"> Book </param>
+        /// <returns></returns>
+        /// <response code="200">Successfully Added newly Book</response>
+        [HttpPost("addpost")]
+        [Consumes("application/json")]
+
+        //[ProducesResponseType(statusCode: 200, type:typeof(Book))]
+        public async Task<IActionResult> Post([FromBody] BookDto book)
         {
             var bookResult = await _bookRepository.Add(new Book { Title = book.Title });
             return Ok(bookResult);

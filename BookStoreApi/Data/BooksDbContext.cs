@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookStoreApi.Data
 {
-    public class BooksDbContext : IdentityDbContext
+    public class BooksDbContext : IdentityDbContext<ApplicationUser>
     {
         public BooksDbContext(DbContextOptions<BooksDbContext> options) : base(options)
         {

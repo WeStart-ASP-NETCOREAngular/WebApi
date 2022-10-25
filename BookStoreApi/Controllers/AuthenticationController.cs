@@ -1,4 +1,5 @@
-﻿using BookStoreApi.DTOs;
+﻿using BookStoreApi.Data;
+using BookStoreApi.DTOs;
 using BookStoreApi.Interfaces;
 using BookStoreApi.Services;
 using Microsoft.AspNetCore.Http;
@@ -12,9 +13,9 @@ namespace BookStoreApi.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IJwtTokenGenerator _jwtToken;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AuthenticationController(IJwtTokenGenerator jwtToken, UserManager<IdentityUser> userManager)
+        public AuthenticationController(IJwtTokenGenerator jwtToken, UserManager<ApplicationUser> userManager)
         {
             _jwtToken = jwtToken;
             _userManager = userManager;
@@ -46,12 +47,15 @@ namespace BookStoreApi.Controllers
             {
                 return BadRequest("User exists!");
             }
+            
 
-            IdentityUser identityUser = new IdentityUser
+            ApplicationUser identityUser = new ApplicationUser
             {
                 Email = registerRequestDto.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = registerRequestDto.Username,
+                FirstName = registerRequestDto.FirstName,
+                LastName = registerRequestDto.LastName
             };
 
 

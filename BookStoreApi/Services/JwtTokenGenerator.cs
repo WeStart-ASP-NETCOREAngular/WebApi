@@ -1,4 +1,5 @@
-﻿using BookStoreApi.Interfaces;
+﻿using BookStoreApi.Data;
+using BookStoreApi.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,7 +17,7 @@ namespace BookStoreApi.Services
             _configuration = configuration;
         }
 
-        public string Generate(IdentityUser user)
+        public string Generate(ApplicationUser user)
         {
             // Claims
             List<Claim> claims = new List<Claim>()
