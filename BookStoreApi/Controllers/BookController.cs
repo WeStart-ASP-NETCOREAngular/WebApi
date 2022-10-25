@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace BookStoreApi.Controllers
 {
@@ -16,10 +17,16 @@ namespace BookStoreApi.Controllers
     public class BookController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
+        private readonly IStringLocalizer<BookController> _stringLocalizer;
+        private readonly IStringLocalizer<SharedResource> _sharedLocalizer;
 
-        public BookController(IBookRepository bookRepository)
+        public BookController(IBookRepository bookRepository,
+            IStringLocalizer<BookController> stringLocalizer,
+            IStringLocalizer<SharedResource> _sharedLocalizer)
         {
             _bookRepository = bookRepository;
+            _stringLocalizer = stringLocalizer;
+            this._sharedLocalizer = _sharedLocalizer;
         }
 
         [HttpGet]
@@ -36,16 +43,20 @@ namespace BookStoreApi.Controllers
         /// <returns></returns>
         /// <response code="200">Returns a book</response>
         /// <response code="404">Book not found in our database</response>
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = "GetBookById")]
         [Produces("application/json")]
+        //[Route(Name ="")]
         public async Task<ActionResult<Book>> Get(int id)
         {
+            var title = _stringLocalizer["Title", "Omran", "Best fullstack developer ever"];
+            var sharedTitle = _sharedLocalizer["SharedTitle"];
+
             var book = await _bookRepository.GetById(id);
             //return book;
             if (book == null)
                 return NotFound();
             else
-                return Ok(book);
+                return Ok(new { book = book, title = title, sharedTitle = sharedTitle });
         }
 
         /// <summary>
@@ -64,15 +75,16 @@ namespace BookStoreApi.Controllers
         /// </remarks>
         /// <param name="book"> Book </param>
         /// <returns></returns>
-        /// <response code="200">Successfully Added newly Book</response>
+        /// <response code="201">Successfully Added newly Book</response>
         [HttpPost("addpost")]
         [Consumes("application/json")]
-
         //[ProducesResponseType(statusCode: 200, type:typeof(Book))]
         public async Task<IActionResult> Post([FromBody] BookDto book)
         {
             var bookResult = await _bookRepository.Add(new Book { Title = book.Title });
-            return Ok(bookResult);
+            //return Ok(bookResult);
+            //return CreatedAtRoute("GetBookById", new { id = bookResult.Id }, bookResult);
+            return CreatedAtAction(nameof(Get), new { id = bookResult.Id }, bookResult);
         }
 
         [HttpPut("{id}")]

@@ -55,6 +55,11 @@ builder.Services
     });
 
 
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath = "Resources";
+});
+
 //builder.Services.AddSingleton<IBookRepository, MockBookRepository>();
 //builder.Services.AddScoped<>
 //builder.Services.AddTransient<>;
@@ -103,7 +108,7 @@ builder.Services.AddSwaggerGen(options =>
                     }, new List<string>()
                 }
             });
-   
+
 
     // using System.Reflection;
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -124,6 +129,16 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+
+var supportedCultures = new[] { "en-US", "ar" };
+var localizationOptions =
+    new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.UseRequestLocalization(localizationOptions);
+localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
 
 app.MapControllers();
 
