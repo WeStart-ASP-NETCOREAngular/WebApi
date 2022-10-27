@@ -30,7 +30,7 @@ namespace BookStoreApi.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Get()
         {
             return Ok(await _bookRepository.GetAllBooks());

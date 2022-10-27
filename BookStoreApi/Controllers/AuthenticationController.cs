@@ -2,6 +2,7 @@
 using BookStoreApi.DTOs;
 using BookStoreApi.Interfaces;
 using BookStoreApi.Services;
+using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,15 @@ namespace BookStoreApi.Controllers
     {
         private readonly IJwtTokenGenerator _jwtToken;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public AuthenticationController(IJwtTokenGenerator jwtToken, UserManager<ApplicationUser> userManager)
+        public AuthenticationController(IJwtTokenGenerator jwtToken, UserManager<ApplicationUser> userManager,
+            IMapper mapper
+            )
         {
             _jwtToken = jwtToken;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -47,16 +52,16 @@ namespace BookStoreApi.Controllers
             {
                 return BadRequest("User exists!");
             }
-            
 
-            ApplicationUser identityUser = new ApplicationUser
-            {
-                Email = registerRequestDto.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = registerRequestDto.Username,
-                FirstName = registerRequestDto.FirstName,
-                LastName = registerRequestDto.LastName
-            };
+            var identityUser = _mapper.Map<ApplicationUser>(registerRequestDto);
+            //ApplicationUser identityUser = new ApplicationUser
+            //{
+            //    Email = registerRequestDto.Email,
+            //    SecurityStamp = Guid.NewGuid().ToString(),
+            //    UserName = registerRequestDto.Username,
+            //    FirstName = registerRequestDto.FirstName,
+            //    LastName = registerRequestDto.LastName
+            //};
 
 
             var result = await _userManager.CreateAsync(identityUser, registerRequestDto.Password);

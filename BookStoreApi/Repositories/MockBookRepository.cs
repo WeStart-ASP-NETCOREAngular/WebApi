@@ -1,4 +1,5 @@
-﻿using BookStoreApi.Interfaces;
+﻿using BookStoreApi.DTOs;
+using BookStoreApi.Interfaces;
 using BookStoreApi.Models;
 
 namespace BookStoreApi.Repositories
@@ -33,9 +34,9 @@ namespace BookStoreApi.Repositories
 
         }
 
-        public Task<List<Book>> GetAllBooks()
+        public Task<List<BookDto>> GetAllBooks()
         {
-            return Task.FromResult(_books.ToList());
+            return Task.FromResult(_books.Select(x => new BookDto { Title = x.Title }).ToList());
         }
 
         public Task<Book> GetById(int id)

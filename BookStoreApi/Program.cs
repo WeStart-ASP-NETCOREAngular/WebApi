@@ -1,59 +1,19 @@
+using BookStoreApi;
 using BookStoreApi.Data;
-using BookStoreApi.Interfaces;
-using BookStoreApi.Repositories;
-using BookStoreApi.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using BookStoreApi.Mapping;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<BooksDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddIdentityCore<ApplicationUser>(options =>
-{
-    options.Password.RequiredUniqueChars = 1;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireDigit = false;
-    options.Password.RequiredLength = 1;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireLowercase = false;
-
-})
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<BooksDbContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services
-    .AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options => options.TokenValidationParameters =
-    new TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secert"])),
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
-    });
-
+builder.Services.AddDataLayer(configuration)
+    .AddAuthLayer(configuration)
+    .AddMapping();
+//builder.Services.AddScoped<IMapper, ServiceMap>
 
 builder.Services.AddLocalization(options =>
 {

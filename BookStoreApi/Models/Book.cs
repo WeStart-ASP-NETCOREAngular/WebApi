@@ -10,7 +10,9 @@ namespace BookStoreApi.Models
         public int Id { get; set; }
         [Required]
         //[Column(Order = 3)]
-        public string Title { get; set; } = string.Empty;
+        public string Title { get; set; } = null!;
+
+        public string TitleAr { get; set; }
 
         //[Column(Order = 2)]
         //public string Description { get; set; }

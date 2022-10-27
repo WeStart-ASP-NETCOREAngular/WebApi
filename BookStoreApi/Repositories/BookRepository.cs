@@ -2,6 +2,8 @@
 using BookStoreApi.Interfaces;
 using BookStoreApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Mapster;
+using BookStoreApi.DTOs;
 
 namespace BookStoreApi.Repositories
 {
@@ -34,9 +36,9 @@ namespace BookStoreApi.Repositories
             }
         }
 
-        public async Task<List<Book>> GetAllBooks()
+        public async Task<List<BookDto>> GetAllBooks()
         {
-            return await _context.Books.ToListAsync();
+            return await _context.Books.ProjectToType<BookDto>().ToListAsync();
         }
 
         public async Task<Book> GetById(int id)
